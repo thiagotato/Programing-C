@@ -59,6 +59,11 @@ int reverse_order(int a, int b)
 	return b - a;
 }
 
+int crazy_order(int a, int b)
+{
+	return a * b;
+}
+
 int strange_order(int a, int b)
 {
 	if(a == 0 || b == 0)
@@ -88,6 +93,15 @@ void test_sorting(int *numbers, int count, compare_cb cmp)
 	printf("\n");
 	
 	free(sorted);
+
+	unsigned char *data = (unsigned char *)numbers;
+
+	for(i=0; i < 25; i++)
+	{
+		printf("%02x:", data[i]);	
+	}
+
+	printf("\n");
 }
 
 int main(int argc, char *argv[])
@@ -97,6 +111,7 @@ int main(int argc, char *argv[])
 		die("USAGE: ex18 4 3 1 5 6");
 	}
 
+	char action = argv[1][0];
 	int count = argc - 1;
 	int i = 0;
 	char **inputs = argv + 1; 
@@ -111,11 +126,19 @@ int main(int argc, char *argv[])
 	{
 		numbers[i] = atoi(inputs[i]);
 	}
-
+//printf("%s", action);
+	switch(action)
+	{
+	case 'a':
+	test_sorting(numbers, count, crazy_order);
 	test_sorting(numbers, count, sorted_order);
 	test_sorting(numbers, count, reverse_order);
 	test_sorting(numbers, count, strange_order);
-
+	break;
+	default:
+		die("ERROr");
+		break;
+	}
 	free(numbers);
 
 	return 0;

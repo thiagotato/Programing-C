@@ -1,4 +1,4 @@
 all:
-	gcc -Wall -g -o ex18 ex18.c
+	gcc -Wall -g -DNDEBUG -o ex19 ex19.c
 clean:
 	rm -f ex17-teste
