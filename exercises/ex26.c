@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <glob.h>
 #include <string.h>
+#include <stdlib.h>
+#include "dbg.h"
 
-glob_t log_find(char *search, glob_t *globbuf)
+glob_t log_find(glob_t *globbuf)
 {
-	glob(search, GLOB_DOOFFS, NULL, globbuf);
-	return *globbuf;
+	glob("*.txt", GLOB_DOOFFS, NULL, globbuf);
 
-//	glob(search, GLOB_DOOFFS, NULL, &globbuf);
-//	glob("*.tt", GLOB_DOOFFS | GLOB_APPEND, NULL, &globbuf);
+	glob("*.log", GLOB_DOOFFS | GLOB_APPEND, NULL, globbuf);
+	return *globbuf;
 }
 
 int print_result(glob_t globbuf)
@@ -27,14 +28,20 @@ int print_result(glob_t globbuf)
 int check_file(glob_t globbuf)
 {
 	FILE *open;
-	char ptr[100];
-	char *token, *saveptr, *str1;
+	char *ptr, *token, *saveptr, *str1;
 	char *delim = " ";
-	int comp, j;
+	int comp, j, rc;
+
+	ptr = malloc(sizeof(char));
+	fseek();
+	ftell();
+	check_mem(ptr);
 
 	open = fopen(globbuf.gl_pathv[1], "r");
 
-	fread(ptr,100,1,open);
+	rc = fread(ptr,100,1,open);
+	check(rc = 1, "Could't read this file");
+
 	printf(" %s\n", ptr);
 	
 	for (j = 1, str1 = ptr; ; j++, str1 = NULL) 
@@ -47,30 +54,29 @@ int check_file(glob_t globbuf)
 			printf("Encontrado: %d\n", comp);
 	}
 	
-/*	cmp = strtok_r(str1, " ", &saveptr);
-	comp = strcmp("ok", cmp);
-	printf("%d\n", comp);
-
-	str1 = NULL;
-	cmp = strtok_r(str1, " ", &saveptr);
-	comp = strcmp("ok", cmp);
-	printf("%d\n", comp);
-*/
 	fclose(open);
 
 	return 0;
+
+error:
+	globfree(&globbuf);
+	free(ptr);
+	return -1;
 	
 }
 
 int main(int argc, char *argv[])
 {
 	glob_t globbuf;
-	char *search = "tmp";
-//	char *filename = argv[1];
 
-	log_find(search, &globbuf);
+	log_find(&globbuf);
+	check( globbuf.gl_pathc != 0, "File not found");
 	print_result(globbuf);
 	check_file(globbuf);
 
 	return 0;
+
+error:
+	globfree(&globbuf);
+	return -1;
 }
