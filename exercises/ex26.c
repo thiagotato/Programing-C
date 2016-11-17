@@ -25,54 +25,70 @@ int print_result(glob_t globbuf)
 	return 0;
 }
 
-int check_file(glob_t globbuf)
+int check_file(glob_t globbuf, char *search)
 {
-	FILE *open;
-	char *ptr, *token, *saveptr, *str1;
+	FILE *fh;
+	char *ptr, *token, *str1, *saveptr;
 	char *delim = " ";
 	int comp, j, rc;
+	long buff;
 
-	ptr = malloc(sizeof(char));
-	fseek();
-	ftell();
+	fh = fopen(globbuf.gl_pathv[1], "r");
+	fseek(fh, 0, SEEK_END);
+	buff = ftell(fh);
+	ptr = malloc(buff);
 	check_mem(ptr);
-
-	open = fopen(globbuf.gl_pathv[1], "r");
-
-	rc = fread(ptr,100,1,open);
+	rewind(fh);
+	rc = fread(ptr,buff,1,fh);
 	check(rc = 1, "Could't read this file");
+	fclose(fh);
 
 	printf(" %s\n", ptr);
+	
 	
 	for (j = 1, str1 = ptr; ; j++, str1 = NULL) 
 	{
 		token = strtok_r(str1, delim, &saveptr);
 		if (token == NULL)
 		    break;
-		printf("%d: %s\n", j, token);
-			comp = strcmp("thiago",token);
+//		printf("%d: %s\n", j, token);
+			comp = strcmp(search,token);
 			printf("Encontrado: %d\n", comp);
 	}
-	
-	fclose(open);
 
 	return 0;
 
 error:
 	globfree(&globbuf);
 	free(ptr);
-	return -1;
-	
+	return -1;	
+}
+
+int usage()
+{
+	printf("You are able to search into *.txt an *.log\n");
+
+	return 0;
 }
 
 int main(int argc, char *argv[])
 {
 	glob_t globbuf;
+	int i;
+		
+	if(argc == 1)
+	{
+		usage();
+	}
 
 	log_find(&globbuf);
 	check( globbuf.gl_pathc != 0, "File not found");
-	print_result(globbuf);
-	check_file(globbuf);
+
+	for(i=1; i < argc; i++)
+	{
+		check_file(globbuf, argv[i]);
+	}
+//	print_result(globbuf);
 
 	return 0;
 
