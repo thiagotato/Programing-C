@@ -32,6 +32,7 @@ int check_file(glob_t globbuf, char *search)
 	char *delim = " ";
 	int comp, j, rc;
 	long buff;
+	size_t length;
 
 	fh = fopen(globbuf.gl_pathv[1], "r");
 	fseek(fh, 0, SEEK_END);
@@ -43,17 +44,20 @@ int check_file(glob_t globbuf, char *search)
 	check(rc = 1, "Could't read this file");
 	fclose(fh);
 
-	printf(" %s\n", ptr);
+/*	printf(" %s\n", ptr);
 	
+	index = rindex(ptr, ind);
+	printf("teste: %s\n", index); */
 	
 	for (j = 1, str1 = ptr; ; j++, str1 = NULL) 
 	{
 		token = strtok_r(str1, delim, &saveptr);
 		if (token == NULL)
 		    break;
+		length = strlen(search);
 //		printf("%d: %s\n", j, token);
-			comp = strcmp(search,token);
-			printf("Encontrado: %d\n", comp);
+		comp = strncmp(search, token, length);
+		printf("Encontrado: %d\n", comp);
 	}
 
 	return 0;
@@ -66,7 +70,7 @@ error:
 
 int usage()
 {
-	printf("You are able to search into *.txt an *.log\n");
+	printf("You are able to search into:\n*.txt\n*.log\n");
 
 	return 0;
 }
