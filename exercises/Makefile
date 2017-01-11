@@ -1,2 +1,2 @@
 defult:
-	cc -Wall -g -DNDEBUG ex26.c -o ex26
+	cc -Wall -g -DNDEBUG ex27.c -o ex27
