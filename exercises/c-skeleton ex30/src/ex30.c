@@ -22,7 +22,7 @@ char *test_dlclose()
 
 char *all_tests()
 {
-	mu_suite_start():
+	mu_suite_start();
 
 	mu_run_test(test_dlopen);
 	mu_run_test(test_functions);

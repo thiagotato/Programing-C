@@ -2,7 +2,7 @@ CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
-SOURCE=$(wildcard src/**/*.c src/*.c)
+SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c, %.o,$(SOURCES))
 
 TEST_SRC=$(wildcard test/*_tests.c)
@@ -22,7 +22,7 @@ $(TARGET): build $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 $(SO_TARGET): $(TARGET) $(OBJECTS)
-	$(cc) -shared -o $@ $(OBJECTS)
+	$(CC) -shared -o $@ $(OBJECTS)
 
 build:
 	@mkdir -p build
